@@ -13,7 +13,7 @@ import { TicketState } from '../Models/ticketState';
 import { ItemType } from '../Models/itemType';
 import { ArtifactDownloadTicket } from '../Models/artifactDownloadTicket';
 
-var config = require("./config.json")
+var config = require("../test.config.json")
 
 describe('perf tests', () => {
     //Artifact details => Files: 301, Total Size: 1.7GB
