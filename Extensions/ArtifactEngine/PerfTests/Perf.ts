@@ -16,6 +16,44 @@ import { ArtifactDownloadTicket } from '../Models/artifactDownloadTicket';
 var config = require("../test.config.json")
 
 describe('perf tests', () => {
+    //Artifact details => Files: 257, Total Size: 1.04GB
+    it('should be able to download large jenkins artifact', function (done) {
+        this.timeout(300000);
+        let processor = new engine.ArtifactEngine();
+
+        let processorOptions = new engine.ArtifactEngineOptions();
+        processorOptions.itemPattern = "**";
+        processorOptions.parallelProcessingLimit = 8;
+        processorOptions.retryIntervalInSeconds = 2;
+        processorOptions.retryLimit = 4;
+        processorOptions.verbose = true;
+
+
+        var itemsUrl = "http://redvstt-lab43:8080/job/AngoyaJob/9/api/json?tree=artifacts[*]";
+        var variables = {
+            "endpoint": {
+                "url": "http://redvstt-lab43:8080"
+            },
+            "definition": "AngoyaJob",
+            "version": "9"
+        };
+
+        var handler = new BasicCredentialHandler(config.jenkins.username, config.jenkins.password);
+        var webProvider = new providers.WebProvider(itemsUrl, "jenkins.handlebars", variables, handler, { ignoreSslError: false });
+        var dropLocation = path.join(config.dropLocation, "jenkinsDropWithLargeFiles");
+        var filesystemProvider = new providers.FilesystemProvider(dropLocation);
+
+        processor.processItems(webProvider, filesystemProvider, processorOptions)
+            .then((tickets) => {
+                let fileTickets = tickets.filter(x => x.artifactItem.itemType == ItemType.File && x.state === TicketState.Processed);
+                assert.equal(fileTickets.length, 257);
+                assert(getDownloadSizeInMB(fileTickets) > 300);
+                done();
+            }, (error) => {
+                throw error;
+            });
+    });
+
     //Artifact details => Files: 301, Total Size: 1.7GB
     it('should be able to download large build artifact from vsts drop', function (done) {
         this.timeout(300000);
