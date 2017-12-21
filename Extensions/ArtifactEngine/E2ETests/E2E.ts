@@ -26,13 +26,13 @@ describe('e2e tests', () => {
         processorOptions.retryLimit = 2;
         processorOptions.verbose = true;
 
-        var itemsUrl = "http://redvstt-lab43:8080/job/ArtifactEngineJob/6/api/json?tree=artifacts[*]";
+        var itemsUrl = "http://rmcdpjenkins2.southindia.cloudapp.azure.com:8080/job/ReleaseManagement/job/RMCDP/job/ArtifactEngineTests/job/SmallProject/10/api/json?tree=artifacts[*]";
         var variables = {
             "endpoint": {
-                "url": "http://redvstt-lab43:8080"
+                "url": "http://rmcdpjenkins2.southindia.cloudapp.azure.com:8080"
             },
-            "definition": "ArtifactEngineJob",
-            "version": "6"
+            "definition": "ReleaseManagement/job/RMCDP/job/ArtifactEngineTests/job/SmallProject",
+            "version": "10"
         };
 
         var handler = new BasicCredentialHandler(config.jenkins.username, config.jenkins.password);
